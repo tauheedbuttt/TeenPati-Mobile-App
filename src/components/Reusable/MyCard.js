@@ -5,16 +5,16 @@ import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import { useFonts } from 'expo-font';
 import AppLoading from 'expo-app-loading';
 
-const MyListCard = ({children, style}) => {
+const MyCard = ({children, cardStyle}) => {
     let [fontsLoaded] = useFonts({
-        'OpenSauceSans': require("../../assets/fonts/OpenSauceSans-SemiBold.ttf")
+        'OpenSauceSans': require("../../../assets/fonts/OpenSauceSans-SemiBold.ttf")
     });
     if (!fontsLoaded){
         return <AppLoading/>;
     }
     
     return (
-        <View style = {[styles.viewStyle, style]}>
+        <View style = {[styles.viewStyle, cardStyle]}>
             {children}
         </View>
     );
@@ -22,11 +22,11 @@ const MyListCard = ({children, style}) => {
 
 const styles = StyleSheet.create({
     viewStyle: {
-        borderColor: "#72A604",
+        borderColor: "#272727",
         borderWidth: 5,
         borderRadius: 25,
 
-        backgroundColor: "#F4F4F4",
+        backgroundColor: "#C9E265",
         shadowColor: "#545454",
         shadowOffset: {width: 10, height: 10},
         shadowOpacity: 1,
@@ -35,4 +35,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default MyListCard;
+export default MyCard;

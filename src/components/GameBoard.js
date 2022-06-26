@@ -2,7 +2,7 @@ import React from "react";
 import {View, Text, StyleSheet} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import MyCard from "./MyCard";
+import MyCard from "./Reusable/MyCard";
 
 const GameBoard = ({username, players, style}) => {
     return (

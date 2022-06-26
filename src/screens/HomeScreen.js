@@ -2,9 +2,10 @@ import React, {useState} from "react";
 import { View, StyleSheet,Text, ImageBackground, Image } from 'react-native';
 import Dialog, { DialogFooter, DialogButton, DialogContent, DialogTitle } from 'react-native-popup-dialog';
 
-import MyButton from "../components/MyButton";
-import MyCard from "../components/MyCard";
-import PlayerSelector from "../components/PlayerSelector.";
+
+import MyButton from "../components/Reusable/MyButton";
+import MyCard from "../components/Reusable/MyCard";
+import Counter from "../components/Reusable/Counter";
 
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -25,8 +26,6 @@ const HomeScreen = ({ navigation }) => {
         { title: "Practice", onPress: () => { setSelection(true) }},
         { title: "Help", onPress: () => { navigation.navigate('Help') } },
     ]
-
-
 
     return (
         <SafeAreaView style={styles.safeViewStyle}>
@@ -88,10 +87,11 @@ const HomeScreen = ({ navigation }) => {
                         onTouchOutside ={() => setSelection(false)}
                     >
                         <DialogContent style={styles.diaglogStyle}>
-                                <PlayerSelector
+                                <Counter
                                     value = {players}
-                                    onIncrease = {() => setPlayers(players+1 <= 4 ? players+1 : players)}
-                                    onDecrease = {() => setPlayers(players-1 > 0 ? players-1 : players)}
+                                    func = {setPlayers}
+                                    max = {4}
+                                    min = {1}
                                     style = {{marginTop: 10}}
                                 />
                                 <MyButton

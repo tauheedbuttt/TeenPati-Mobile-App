@@ -4,16 +4,20 @@ import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 // FONTS
 import { useFonts } from 'expo-font';
 
-const MyButton = ({text, onPress, btnStyle}) => {
+var isDisabled = false;
+
+const MyButton = ({text, onPress, btnStyle, disabled}) => {
+    isDisabled = disabled;
     let [fontsLoaded] = useFonts({
-        'OpenSauceSans': require("../../assets/fonts/OpenSauceSans-SemiBold.ttf")
+        'OpenSauceSans': require("../../../assets/fonts/OpenSauceSans-SemiBold.ttf")
     });
     return (
         <TouchableOpacity 
             style={[styles.tchStyle, btnStyle]}
             onPress={onPress}
+            disabled={disabled}
         >
-            <Text style={styles.txtStyle}>{text}</Text>
+            <Text style={[styles.txtStyle, {color: (disabled ? "#A4A2A2" : "#272727")}]}>{text}</Text>
         </TouchableOpacity>
     );
 }

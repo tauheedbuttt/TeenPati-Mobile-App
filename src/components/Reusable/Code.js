@@ -11,7 +11,7 @@ import { useFonts } from 'expo-font';
 const Code = ({code, style}) => {
     const [myCode, setCode]=useState(code);
     let [fontsLoaded] = useFonts({
-        'OpenSauceSans': require("../../assets/fonts/OpenSauceSans-SemiBold.ttf")
+        'OpenSauceSans': require("../../../assets/fonts/OpenSauceSans-SemiBold.ttf")
     });
     return (
         <View style={[styles.container, style]}>

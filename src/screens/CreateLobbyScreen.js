@@ -7,13 +7,16 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 
 
 
-import MyButton from "../components/MyButton";
-import MyCard from "../components/MyCard";
-import BackButton from "../components/BackButton";
-import MyTextBox from "../components/MyTextbox";
-import MyListCard from "../components/MyListCard";
-import MyProfile from "../components/MyProfile";
-import PlayerSelector from "../components/PlayerSelector.";
+import MyButton from "../components/Reusable/MyButton";
+import MyCard from "../components/Reusable/MyCard";
+import BackButton from "../components/Reusable/BackButton";
+import MyTextBox from "../components/Reusable/MyTextbox";
+import MyListCard from "../components/Reusable/MyListCard";
+import MyProfile from "../components/Reusable/MyProfile";
+import Counter from "../components/Reusable/Counter";
+import envs from "../config/env";
+
+
 
 // FONTS
 import { useFonts } from 'expo-font';
@@ -21,31 +24,54 @@ import { FlatList } from "react-native-gesture-handler";
 
 
 const CreateLobbyScreen = ({ navigation: { goBack, navigate }}) => {
+    const {MONGO_URL} = envs;
+
+
     let [fontsLoaded] = useFonts({
         'OpenSauceSans': require("../../assets/fonts/OpenSauceSans-SemiBold.ttf")
     });
+    // create game button
+    const [createGameDisabled, setCreateGameDisabled] = useState(true);
     // username
     const [username, setUsername] = useState("");
     // server name from text box
     const [serverName, setServerName] = useState("");
+    // Total PPLayers
+    const [players, setPlayers] = useState(1);
     // unkown gameplay mode
     const [isUnkownMode, setisUnkownMode] = useState(false);
     // special moves that user can engage in
     const moves = [
-        {key: "0", move: "7 Pati"},
-        {key: "1", move: "10 Pati"},
-        {key: "2", move: "King Pati"},
+        {key: "0", move: "Swap Cards"},
+        {key: "1", move: "Reveal Cards"},
+        {key: "2", move: "Attack Cards"},
     ];
     const [specialMoves, setSpecialMoves] = useState([false,false,false]);
-    // 
+
+    // -------------------- Input Functions --------------------
     const moveAllowed = (specialMoves, i) => {
         let temp_state = [...specialMoves];
         temp_state[i] = !temp_state[i];
         setSpecialMoves(temp_state);
     }
 
-    // Total PPLayers
-    const [players, setPlayers] = useState(1);
+    // Entering Lobby Through Code
+    const inputServerName = (newValue) => {
+        setServerName(newValue);
+        setCreateGameDisabled(createGameDisabled == true ? false : (newValue=="") ? true : createGameDisabled);
+    }
+    // On Create Game
+    const onCreateGameClick = () => {
+        navigate('Game', {
+                username: username, 
+                players: players,
+                unkownMode: isUnkownMode,
+                moves: specialMoves, 
+                against: "USER", 
+                code: "BRU4H1"
+            }
+        );
+    }
     
     return (
         <SafeAreaView style={styles.safeViewStyle}>
@@ -70,15 +96,16 @@ const CreateLobbyScreen = ({ navigation: { goBack, navigate }}) => {
                                 hint="Server Name   "
                                 style={styles.serverNameStyle}
                                 value={serverName}
-                                onChangeText={(newValue)=>{setServerName(newValue)}}
+                                onChangeText={inputServerName}
                             />
                             {/* Players Row */}
                             <View style={styles.rowStyle}>
                                 <Text style={styles.txtStyle}>Players</Text>
-                                <PlayerSelector
+                                <Counter
                                     value = {players}
-                                    onIncrease = {() => setPlayers(players+1 <= 4 ? players+1 : players)}
-                                    onDecrease = {() => setPlayers(players-1 > 0 ? players-1 : players)}
+                                    func = {setPlayers}
+                                    max = {4}
+                                    min = {1}
                                     style = {{flex:0.65}}
                                 />
                             </View>
@@ -101,7 +128,8 @@ const CreateLobbyScreen = ({ navigation: { goBack, navigate }}) => {
                                     <MyButton
                                         text="Create"
                                         btnStyle={[styles.btnStyle, {height: 50}]}
-                                        onPress = {()=>{navigate('Game', {username: username, players: players, against: "USER", code: "BRU4H1"});}}
+                                        onPress = {onCreateGameClick}
+                                        disabled = {createGameDisabled}
                                     />
                                 </View>
                                 {/* Special Moves */}
@@ -116,7 +144,7 @@ const CreateLobbyScreen = ({ navigation: { goBack, navigate }}) => {
                                                         onClick={()=>{moveAllowed(specialMoves, item.key)}}
                                                         isChecked={specialMoves[item.key]}
                                                     />
-                                                    <Text style={styles.txtStyle}>{"\t"}{item.move}</Text>
+                                                    <Text style={[styles.txtStyle, {fontSize: 15}]}>{"\t"}{item.move}</Text>
                                                 </View>
                                             );
                                         }}

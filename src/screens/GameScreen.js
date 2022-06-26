@@ -2,19 +2,19 @@ import React from "react";
 import {View, Text, ImageBackground, StyleSheet, Dimensions, ScrollView} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import MyCard from "../components/MyCard";
-import BackButton from "../components/BackButton";
+import MyCard from "../components/Reusable/MyCard";
+import BackButton from "../components/Reusable/BackButton";
 import BulletPoint from "../components/BulletPoint";
-import MyButton from "../components/MyButton";
+import MyButton from "../components/Reusable/MyButton";
 import GameBoard from "../components/GameBoard";
-import Code from "../components/Code";
+import Code from "../components/Reusable/Code";
 
 
 let ScreenHeight = Dimensions.get("window").height;
 let ScreenWidth = (Dimensions.get('window').width);
 const GameScreen = ({ navigation, navigation:{goBack, state:{params}}} ) => {
     // console.log("GameScreen: "+ params.players);
-    const {username, players, against, code} = params
+    const {username, players, unkownMode, moves, against, code} = params
     let codeView = null;
     if (against == "USER"){
         codeView = (

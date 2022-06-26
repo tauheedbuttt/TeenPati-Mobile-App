@@ -1,23 +1,22 @@
 import React from "react";
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
-import DropDownPicker from 'react-native-dropdown-picker';
 
 // import { useHistory } from "react-router-dom";
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 
 
-const PlayerSelector = ({value, onIncrease, onDecrease, style}) => {
+const Counter = ({value, func, max, min, style}) => {
     return (
         <View style = {[styles.container, style]}>
             <TouchableOpacity
-                onPress={onDecrease}
+                onPress={() => func(value-1 >= min ? value-1 : value)}
             >
                 <Ionicons name="remove-circle-outline" size={50} color="#72A604"/>
             </TouchableOpacity>
             <Text style={styles.txtStyle}>{value}</Text>
             <TouchableOpacity
-                onPress={onIncrease}
+                onPress={() => func(value+1 <= max ? value+1 : value)}
             >
                 <Ionicons name="add-circle-outline" size={50} color="#72A604"/>
             </TouchableOpacity>
@@ -39,4 +38,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default PlayerSelector;
+export default Counter;

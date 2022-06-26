@@ -3,9 +3,9 @@ import {View, StyleSheet, Image} from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 
-import MyButton from "../components/MyButton";
-import MyCard from "../components/MyCard";
-import MyTextBox from "../components/MyTextbox";
+import MyButton from "./MyButton";
+import MyCard from "./MyCard";
+import MyTextBox from "./MyTextbox";
 
 
 

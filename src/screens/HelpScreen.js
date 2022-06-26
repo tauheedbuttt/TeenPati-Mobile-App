@@ -2,10 +2,10 @@ import React from "react";
 import {View, Text, ImageBackground, StyleSheet, Dimensions, ScrollView} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import MyCard from "../components/MyCard";
-import BackButton from "../components/BackButton";
+import MyCard from "../components/Reusable/MyCard";
+import BackButton from "../components/Reusable/BackButton";
 import BulletPoint from "../components/BulletPoint";
-import MyButton from "../components/MyButton";
+import MyButton from "../components/Reusable/MyButton";
 
 
 const HelpLobbyScreen = ({ navigation: { goBack }} ) => {
