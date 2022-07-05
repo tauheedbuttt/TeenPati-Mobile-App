@@ -11,10 +11,10 @@ import MyButton from "../components/Reusable/MyButton";
 import MyCard from "../components/Reusable/MyCard";
 import BackButton from "../components/Reusable/BackButton";
 import MyTextBox from "../components/Reusable/MyTextbox";
-import MyListCard from "../components/Reusable/MyListCard";
 import MyProfile from "../components/Reusable/MyProfile";
 import Counter from "../components/Reusable/Counter";
-import envs from "../config/env";
+import CheckBoxList from "../components/CheckBoxList";
+import useCreateLobby from "../hooks/useCreateLobby";
 
 
 
@@ -24,18 +24,13 @@ import { FlatList } from "react-native-gesture-handler";
 
 
 const CreateLobbyScreen = ({ navigation: { goBack, navigate }}) => {
-    const {MONGO_URL} = envs;
-
+    
 
     let [fontsLoaded] = useFonts({
         'OpenSauceSans': require("../../assets/fonts/OpenSauceSans-SemiBold.ttf")
     });
-    // create game button
-    const [createGameDisabled, setCreateGameDisabled] = useState(true);
     // username
     const [username, setUsername] = useState("");
-    // server name from text box
-    const [serverName, setServerName] = useState("");
     // Total PPLayers
     const [players, setPlayers] = useState(1);
     // unkown gameplay mode
@@ -48,18 +43,9 @@ const CreateLobbyScreen = ({ navigation: { goBack, navigate }}) => {
     ];
     const [specialMoves, setSpecialMoves] = useState([false,false,false]);
 
-    // -------------------- Input Functions --------------------
-    const moveAllowed = (specialMoves, i) => {
-        let temp_state = [...specialMoves];
-        temp_state[i] = !temp_state[i];
-        setSpecialMoves(temp_state);
-    }
+    const [createGameDisabled, serverName, inputServerName, generateCode] = useCreateLobby();
 
-    // Entering Lobby Through Code
-    const inputServerName = (newValue) => {
-        setServerName(newValue);
-        setCreateGameDisabled(createGameDisabled == true ? false : (newValue=="") ? true : createGameDisabled);
-    }
+    
     // On Create Game
     const onCreateGameClick = () => {
         navigate('Game', {
@@ -68,7 +54,7 @@ const CreateLobbyScreen = ({ navigation: { goBack, navigate }}) => {
                 unkownMode: isUnkownMode,
                 moves: specialMoves, 
                 against: "USER", 
-                code: "BRU4H1"
+                code: generateCode(6)
             }
         );
     }
@@ -133,29 +119,16 @@ const CreateLobbyScreen = ({ navigation: { goBack, navigate }}) => {
                                     />
                                 </View>
                                 {/* Special Moves */}
-                                <MyListCard style={styles.movesListStyle}>
-                                    <FlatList
-                                        data={moves}
-                                        keyExtractor={(item)=>item.key}
-                                        renderItem = {({item})=>{
-                                            return(
-                                                <View style={{flexDirection:"row", alignItems: "center"}}>
-                                                    <CheckBox
-                                                        onClick={()=>{moveAllowed(specialMoves, item.key)}}
-                                                        isChecked={specialMoves[item.key]}
-                                                    />
-                                                    <Text style={[styles.txtStyle, {fontSize: 15}]}>{"\t"}{item.move}</Text>
-                                                </View>
-                                            );
-                                        }}
-                                    />
-                                </MyListCard>
+                                <CheckBoxList
+                                    data = {moves}
+                                    selected = {specialMoves}
+                                    setSelected=  {setSpecialMoves}
+                                    style = {styles.movesListStyle}
+                                />
                             </View>
                         </MyCard>
                     </View>
-                    
                 </View>
-                
             </ImageBackground>
         </SafeAreaView>
     );
@@ -199,13 +172,6 @@ const styles = StyleSheet.create({
         paddingVertical: 5,
         borderWidth: 3,
         justifyContent: "center"
-    },
-    dropDownStyle: {
-        width: 120,
-        borderWidth: 2,
-        borderColor: "#272727",
-        borderRadius: 10,
-        backgroundColor: "#FFF5F5",
     },
     switchStyle: {
         flex: 0.87,

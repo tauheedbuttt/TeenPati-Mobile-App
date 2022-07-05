@@ -5,6 +5,7 @@ import { NavigationActions, StackActions } from 'react-navigation';
 import MyButton from "../components/Reusable/MyButton";
 import MyCard from "../components/Reusable/MyCard";
 import MyListCard from "../components/Reusable/MyListCard";
+import useResult from "../hooks/useResult";
 
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFonts } from 'expo-font';
@@ -19,15 +20,16 @@ const ResultPageScreen = ({ navigation,navigation:{goBack, state:{params}} }) =>
     let [fontsLoaded] = useFonts({
         'OpenSauceSans': require("../../assets/fonts/OpenSauceSans-SemiBold.ttf")
     });
-    // const {username, players, unkownMode, moves, against, code} = params
+    // const {username, players} = params
     let username = "btck";
     let players = [
         {name: "btck", score: 3},
         {name: "lmao", score: 4},
-        {name: "huhs", score: 5},
+        {name: "huhs", score: 2},
         {name: "shsh", score: 6}
     ]
-    let winner = "shsh";
+    const [winner] = useResult(players);
+    console.log(winner);
 
     return (
         <SafeAreaView style={styles.safeViewStyle}>
