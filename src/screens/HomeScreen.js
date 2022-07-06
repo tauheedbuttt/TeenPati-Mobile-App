@@ -6,6 +6,7 @@ import Dialog, { DialogFooter, DialogButton, DialogContent, DialogTitle } from '
 import MyButton from "../components/Reusable/MyButton";
 import MyCard from "../components/Reusable/MyCard";
 import Counter from "../components/Reusable/Counter";
+import LobbyContext from "../context/LobbyContext";
 
 import { SafeAreaView } from 'react-native-safe-area-context';
 

@@ -1,5 +1,8 @@
+import React from "react";
 import { createAppContainer } from "react-navigation";
 import { createStackNavigator } from "react-navigation-stack";
+
+import { Provider as LobbyProvider } from "./src/context/LobbyContext";
 
 // Ignore Warnings
 import { LogBox } from 'react-native';
@@ -29,4 +32,12 @@ const navigator = createStackNavigator({
   headerMode: 'none',
 });
 
-export default createAppContainer(navigator);
+const App = createAppContainer(navigator);
+
+export default () => {
+  return (
+    <LobbyProvider>
+      <App/>
+    </LobbyProvider>
+  );
+}

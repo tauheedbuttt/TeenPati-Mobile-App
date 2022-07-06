@@ -1,5 +1,7 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import Yelp from "../api/Yelp";
+
+import {Context as LobbyContext} from "../context/LobbyContext";
 
 export default () => {
     // extra state
@@ -8,18 +10,27 @@ export default () => {
     const [lobbyCode, setServerCode] = useState("");
     // selected lobby
     const [server, setServer] = useState({});
+    // Lobby CRUD
+    const {addLobby, deleteLobby, editLobby} = useContext(LobbyContext);
 
 
     const onRefresh = async () => {
         // console.log("Refresh");
-        const response = await Yelp.get('/search', {
-            params: {
-                limit: 50,
-                term: "Bund",
-                location: "san jose"
-            }
-        });
-        console.log((response.data.businesses).length);
+        
+        // ------------------------------- API DATA FETCH ------------------------------
+        // const response = await Yelp.get('/search', {
+            //     params: {
+                //         limit: 50,
+                //         term: "Bund",
+                //         location: "san jose"
+        //     }
+        // });
+        // console.log((response.data.businesses).length);
+
+        // ------------------------------- PROVIDER DATA FETCH ------------------------------
+        // addLobby({name: "NEW LOBBIE", code: "asdasd", players: 4, playing: 2});
+        // deleteLobby("HUHUHH");
+        editLobby("GGSD$#", {name: "BRUH LOL", code: "asdasdd", players: 4, playing: 2});
     };
 
     // ----------------------------- Based on INPUT controls --------------------------------

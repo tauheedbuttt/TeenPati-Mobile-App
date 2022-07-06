@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState, useContext} from "react";
 import {View, ImageBackground, StyleSheet, FlatList, Text, TouchableOpacity} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -10,32 +10,20 @@ import MyTextBox from "../components/Reusable/MyTextbox";
 import MyProfile from "../components/Reusable/MyProfile";
 import LobbyList from "../components/LobbyList";
 import useJoinLobby from "../hooks/useJoinLobby";
+import {Context as LobbyContext} from "../context/LobbyContext";
 
 
 const JoinLobbyScreen = ({ navigation: { goBack, navigate }} ) => {
     // username
     const [username, setUsername] = useState("");
     
-    // servers
-    const servers = [
-        {name: "btcks", code: "HUHUHH"  , players: 4, playing: 2},
-        {name: "asdds", code: "GGSD$#"  , players: 4, playing: 1},
-        {name: "asfasf", code: "SDGG%6" , players: 4, playing: 3},
-        {name: "fdsdfsd", code: "GHRF6" , players: 4, playing: 4},
-        {name: "fdsdfsd", code: "GDRHF6", players: 4, playing: 2},
-        {name: "fdsdfsd", code: "GHGHF6", players: 4, playing: 1},
-        {name: "fdsdfsd", code: "GHAHF6", players: 4, playing: 4},
-        {name: "fdsdfsd", code: "GHRGF6", players: 4, playing: 2},
-        {name: "fdsdfsd", code: "GHRHA6", players: 4, playing: 3},
-        {name: "fdsdfsd", code: "GHQHF6", players: 4, playing: 2},
-    ]
+    // servers from database
+    const value = useContext(LobbyContext);
+    const servers = value.state;
 
     const [startDisabled, lobbyCode, server, onRefresh, selectLobby, inputLobbyCode] = useJoinLobby();
 
     // ----------------------- Input Functions ---------------------------
-    
-    // Selecting lobby from multiple public servers 
-    
 
     const startGame = () => {
         let code = lobbyCode == "" ? server.code : lobbyCode;
