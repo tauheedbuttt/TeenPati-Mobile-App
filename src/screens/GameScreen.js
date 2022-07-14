@@ -1,5 +1,5 @@
-import React from "react";
-import {View, Text, ImageBackground, StyleSheet, Dimensions, ScrollView} from 'react-native';
+import React, {useEffect, useContext} from "react";
+import {View, Text, ImageBackground, StyleSheet, Dimensions, BackHandler} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import MyCard from "../components/Reusable/MyCard";
@@ -9,20 +9,25 @@ import MyButton from "../components/Reusable/MyButton";
 import GameBoard from "../components/GameBoard";
 import Code from "../components/Reusable/Code";
 
+import useGame from "../hooks/useGame";
 
-let ScreenHeight = Dimensions.get("window").height;
-let ScreenWidth = (Dimensions.get('window').width);
+import {Context as LobbyContext} from "../context/LobbyContext";
+import {Context as AuthContext} from "../context/AuthContext";
+
+
+
+
 const GameScreen = ({ navigation, navigation:{goBack, state:{params}}} ) => {
-    // console.log("GameScreen: "+ params.players);
-    const {username, players, unkownMode, moves, against, code} = params
-    let codeView = null;
-    if (against == "USER"){
-        codeView = (
-            <Code
-                code={code}
-            />
-        );
-    }
+    const {username, against, limit, unkownMode, specialMoves, code, number} = params;
+
+    const [backButton] = useGame(navigation, number, against);
+    useEffect(() => {
+        BackHandler.addEventListener("hardwareBackPress", backButton);
+        return () => {
+            BackHandler.removeEventListener("hardwareBackPress", backButton);
+        };
+    }, []);
+
     return (
         <SafeAreaView style={styles.safeViewStyle}>
             <ImageBackground source={require("../../assets/images/bg.png")} style={styles.bgStyle}>
@@ -30,16 +35,16 @@ const GameScreen = ({ navigation, navigation:{goBack, state:{params}}} ) => {
                     <View style={{flexDirection: "row", alignItems: "center", justifyContent: "space-between"}}>
                         {/* Back Button */}
                         <View style={{alignSelf: "flex-start", marginLeft: 10}}>
-                            <BackButton onPress={()=>{goBack()}}/>
+                            <BackButton onPress={backButton}/>
                         </View>
                         <View style={{flex: 1}} >
-                            {codeView}
+                            {against == "USER" ? <Code code={code}/> : null}
                         </View>
                     </View>
                 </View>
                 <GameBoard 
                     style = {styles.boardStyle}
-                    players = {players}
+                    players = {limit}
                     username = {username}
                 />
 

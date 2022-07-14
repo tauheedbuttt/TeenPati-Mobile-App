@@ -1,9 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import {View, Text, ImageBackground, StyleSheet, Switch, Dimensions} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import CheckBox from 'react-native-check-box'
-import RollPickerNative from 'roll-picker-native'
-import Ionicons from '@expo/vector-icons/Ionicons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 
@@ -15,22 +13,22 @@ import MyProfile from "../components/Reusable/MyProfile";
 import Counter from "../components/Reusable/Counter";
 import CheckBoxList from "../components/CheckBoxList";
 import useCreateLobby from "../hooks/useCreateLobby";
+import {Context as LobbyContext} from "../context/LobbyContext";
+import {Context as AuthContext} from "../context/AuthContext";
 
 
 
 // FONTS
 import { useFonts } from 'expo-font';
-import { FlatList } from "react-native-gesture-handler";
 
 
 const CreateLobbyScreen = ({ navigation: { goBack, navigate }}) => {
     
-
+    
     let [fontsLoaded] = useFonts({
         'OpenSauceSans': require("../../assets/fonts/OpenSauceSans-SemiBold.ttf")
     });
-    // username
-    const [username, setUsername] = useState("");
+    const username ="CreatedInCreateScreen";
     // Total PPLayers
     const [players, setPlayers] = useState(1);
     // unkown gameplay mode
@@ -42,19 +40,31 @@ const CreateLobbyScreen = ({ navigation: { goBack, navigate }}) => {
         {key: "2", move: "Attack Cards"},
     ];
     const [specialMoves, setSpecialMoves] = useState([false,false,false]);
-
+    
     const [createGameDisabled, serverName, inputServerName, generateCode] = useCreateLobby();
-
+    
+    const {addLobby} = useContext(AuthContext);
     
     // On Create Game
-    const onCreateGameClick = () => {
-        navigate('Game', {
-                username: username, 
-                players: players,
-                unkownMode: isUnkownMode,
-                moves: specialMoves, 
-                against: "USER", 
-                code: generateCode(6)
+    const onCreateGame = async () => {
+        let username = await AsyncStorage.getItem("username");;
+        let defaultUsername = await AsyncStorage.getItem("defaultUsername");
+        var lobby = {
+            code: generateCode(6),
+            name: serverName,
+            limit: players,
+            unknownMode: isUnkownMode,
+            deck:[],
+            table:[],
+            players: [{number: 1, username, cards:[]}],
+            specialMoves
+        };
+        navigate('Loading', {
+                action: () => addLobby(
+                    lobby, 
+                    username == "" || username==null ? defaultUsername: username
+                    ),
+                msg: "Creating Lobby"
             }
         );
     }
@@ -73,8 +83,6 @@ const CreateLobbyScreen = ({ navigation: { goBack, navigate }}) => {
                         {/* Left Card */}
                         <MyProfile
                             style = {styles.mainCard1Style}
-                            username = {username}
-                            setUsername = {(value) => setUsername(value)}
                         />
                         {/* Right Card */}
                         <MyCard cardStyle={styles.mainCard2Style}>
@@ -83,6 +91,7 @@ const CreateLobbyScreen = ({ navigation: { goBack, navigate }}) => {
                                 style={styles.serverNameStyle}
                                 value={serverName}
                                 onChangeText={inputServerName}
+                                align= "center"
                             />
                             {/* Players Row */}
                             <View style={styles.rowStyle}>
@@ -114,7 +123,7 @@ const CreateLobbyScreen = ({ navigation: { goBack, navigate }}) => {
                                     <MyButton
                                         text="Create"
                                         btnStyle={[styles.btnStyle, {height: 50}]}
-                                        onPress = {onCreateGameClick}
+                                        onPress = {onCreateGame}
                                         disabled = {createGameDisabled}
                                     />
                                 </View>
@@ -165,7 +174,6 @@ const styles = StyleSheet.create({
     serverNameStyle:{
         width: "75%",
         margin: 10,
-        alignItems: "center"
     },
     btnStyle: {
         width: 120,

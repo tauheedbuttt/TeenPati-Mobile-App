@@ -1,14 +1,7 @@
-import {MONGO_URL,YELP_API_KEY, YELP_CLIENT_ID} from "@env";
+import {NGROK_URL} from "@env";
 
 const devEnvironmentVariables = {
-    MONGO_URL,
-    YELP_API_KEY,
-    YELP_CLIENT_ID,
-};
-const prodEnvironmentVariables = {
-    MONGO_URL,
-    YELP_API_KEY,
-    YELP_CLIENT_ID,
+    NGROK_URL,
 };
 
-export default __DEV__ ? devEnvironmentVariables : prodEnvironmentVariables;
+export default devEnvironmentVariables;

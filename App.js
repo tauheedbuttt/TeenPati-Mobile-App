@@ -2,7 +2,13 @@ import React from "react";
 import { createAppContainer } from "react-navigation";
 import { createStackNavigator } from "react-navigation-stack";
 
+
+// Context
 import { Provider as LobbyProvider } from "./src/context/LobbyContext";
+import { Provider as AuthProvider } from "./src/context/AuthContext";
+
+// navigator refference
+import { setNavigator } from "./src/navigationRef";
 
 // Ignore Warnings
 import { LogBox } from 'react-native';
@@ -18,7 +24,7 @@ import CreateLobbyScreen from "./src/screens/CreateLobbyScreen";
 import HelpScreen from "./src/screens/HelpScreen";
 import ResultPageScreen from "./src/screens/ResultPageScreen";
 import GameScreen from "./src/screens/GameScreen";
-
+import LoadingScreen from "./src/screens/LoadingScreen";
 
 const navigator = createStackNavigator({
   Home: HomeScreen,
@@ -27,6 +33,7 @@ const navigator = createStackNavigator({
   Help: HelpScreen,
   ResultPage: ResultPageScreen,
   Game: GameScreen,
+  Loading: LoadingScreen
 },{
   initialRouteName: 'Home',
   headerMode: 'none',
@@ -37,7 +44,9 @@ const App = createAppContainer(navigator);
 export default () => {
   return (
     <LobbyProvider>
-      <App/>
+      <AuthProvider>
+        <App  ref = {(navigator) =>  {setNavigator(navigator)}}/>
+      </AuthProvider>
     </LobbyProvider>
   );
 }

@@ -1,16 +1,46 @@
-import React from "react";
+import React, {useState,useEffect} from "react";
 import {View, StyleSheet, Image} from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+
 
 
 import MyButton from "./MyButton";
 import MyCard from "./MyCard";
 import MyTextBox from "./MyTextbox";
 
+function randomUsername(){
+    const prefix = "Guest#";
+    const postfix = `${Math.floor(Math.random() * 999999)+100000}`;
+    return (prefix+postfix);
+}
 
+var defaultUsername = randomUsername();
 
-const MyProfile = ({username, setUsername, style}) => {
+const MyProfile = ({style}) => {
     
+    const [username, setUsername] = useState();
+
+    const typeUsername = async (value) =>{
+        // show on screen
+        setUsername(value)
+        // store in storage
+        await AsyncStorage.setItem("username", value);
+    };
+    
+    useEffect(()=>{
+        // store in storage
+        const store = async () => {
+            var previousValue = await AsyncStorage.getItem("username");
+            if (previousValue!=undefined && previousValue!=""){
+                setUsername(previousValue);
+            }
+            await AsyncStorage.setItem("defaultUsername", defaultUsername);
+        }
+        store();
+    },[]);
+
     return (
         <MyCard cardStyle={[styles.mainCardStyle, style]}>
             <Ionicons 
@@ -20,10 +50,11 @@ const MyProfile = ({username, setUsername, style}) => {
                 style={styles.profileImg} 
             />
             <MyTextBox
-                hint={"Username  "}
+                hint={defaultUsername}
                 style={[styles.userNameStyle]}
                 value={username}
-                onChangeText={setUsername}
+                align="center"
+                onChangeText={typeUsername}
             />
             <MyButton 
                 text={"Server"}
@@ -43,7 +74,6 @@ const styles = StyleSheet.create({
     userNameStyle:{
         marginTop: 10,
         width: "100%",
-        alignItems: "center",
     },
     btnStyle: {
         width: 150,

@@ -1,7 +1,7 @@
-import React, {useState, useContext} from "react";
+import React, {useState, useContext, useEffect} from "react";
 import {View, ImageBackground, StyleSheet, FlatList, Text, TouchableOpacity} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import Ionicons from '@expo/vector-icons/Ionicons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import MyButton from "../components/Reusable/MyButton";
 import MyCard from "../components/Reusable/MyCard";
@@ -11,29 +11,31 @@ import MyProfile from "../components/Reusable/MyProfile";
 import LobbyList from "../components/LobbyList";
 import useJoinLobby from "../hooks/useJoinLobby";
 import {Context as LobbyContext} from "../context/LobbyContext";
+import {Context as AuthContext} from "../context/AuthContext";
 
 
-const JoinLobbyScreen = ({ navigation: { goBack, navigate }} ) => {
+const JoinLobbyScreen = ({ navigation: { goBack, navigate, addListener }} ) => {
     // username
-    const [username, setUsername] = useState("");
+    const username="created in join  screen"
     
-    // servers from database
-    const value = useContext(LobbyContext);
-    const servers = value.state;
+    const {state, joinLobby} = useContext(AuthContext);
 
-    const [startDisabled, lobbyCode, server, onRefresh, selectLobby, inputLobbyCode] = useJoinLobby();
+    const [startDisabled, lobbyCode, server, selectLobby, inputLobbyCode] = useJoinLobby();
 
     // ----------------------- Input Functions ---------------------------
 
-    const startGame = () => {
-        let code = lobbyCode == "" ? server.code : lobbyCode;
-        navigate('Game', {
-            username: username, 
-            against: "USER", 
-            code: code
+    const startGame = async () => {
+        const code = lobbyCode == "" ? server.code : lobbyCode;
+        const username = await AsyncStorage.getItem("username");
+        const defaultUsername = await AsyncStorage.getItem("defaultUsername");
+        navigate('Loading', {
+                action: () => joinLobby(code, username=="" ? defaultUsername: username, server.players.length+1),
+                msg: "Joining Lobby"
             }
         );
-    }
+        
+    };
+    console.log(state);
 
     return (
         <SafeAreaView style={styles.safeViewStyle}>
@@ -49,15 +51,11 @@ const JoinLobbyScreen = ({ navigation: { goBack, navigate }} ) => {
                         {/* Left Card */}
                         <MyProfile
                             style = {styles.mainCard1Style}
-                            username = {username}
-                            setUsername = {(value) => setUsername(value)}
                         />
                         {/* Right Card */}
                         <MyCard cardStyle={styles.mainCard2Style}>
                             <LobbyList
-                                data = {servers}
                                 style = {styles.lobbyListStyle}
-                                onRefresh = {onRefresh}
                                 onLobbyPress = {selectLobby}
                                 currentLobby = {server}
                             />

@@ -4,7 +4,7 @@ import {View, Text, StyleSheet, TextInput } from 'react-native';
 // FONTS
 import { useFonts } from 'expo-font';
 
-const MyTextBox = ({hint, onChangeText, style, maxLength, value}) => {
+const MyTextBox = ({hint, onChangeText, style, maxLength, value, align}) => {
     let [fontsLoaded] = useFonts({
         'OpenSauceSans': require("../../../assets/fonts/OpenSauceSans-SemiBold.ttf")
     });
@@ -20,6 +20,7 @@ const MyTextBox = ({hint, onChangeText, style, maxLength, value}) => {
                 autoCorrect={false}
                 value={value}
                 maxLength = {maxLength}
+                textAlign={align}
             />
         </View>
     );

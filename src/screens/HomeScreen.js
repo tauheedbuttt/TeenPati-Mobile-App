@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import { View, StyleSheet,Text, ImageBackground, Image } from 'react-native';
-import Dialog, { DialogFooter, DialogButton, DialogContent, DialogTitle } from 'react-native-popup-dialog';
+import Dialog, { DialogContent, DialogTitle } from 'react-native-popup-dialog';
 
 
 import MyButton from "../components/Reusable/MyButton";
