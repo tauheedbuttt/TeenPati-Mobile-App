@@ -1,14 +1,17 @@
+
 import React, {useEffect, useState, useContext, useCallback} from "react";
 import {RefreshControl, View, TouchableOpacity , Text, StyleSheet, FlatList, ActivityIndicator} from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 import MyListCard from "./Reusable/MyListCard";
+import Error from "./Reusable/Error";
 import {Context as LobbyContext} from "../context/LobbyContext";
 
 // FONTS
 import { useFonts } from 'expo-font';
 
 const LobbyList = ({onLobbyPress, currentLobby, style}) => {
+
     let [fontsLoaded] = useFonts({
         'OpenSauceSans': require("../../assets/fonts/OpenSauceSans-SemiBold.ttf")
     });
@@ -19,7 +22,7 @@ const LobbyList = ({onLobbyPress, currentLobby, style}) => {
 
     // used to reload the fetching of lobbies
     // START
-    const [refreshing, setRefreshing] = useState(true);
+    const [refreshing, setRefreshing] = useState(false);
     
     const onRefresh = useCallback(() => {
         setRefreshing(true);
@@ -55,14 +58,17 @@ const LobbyList = ({onLobbyPress, currentLobby, style}) => {
                         style={styles.listStyle}
                         showsVerticalScrollIndicator={false}
                         showsHorizontalScrollIndicator={false}
+                        ListEmptyComponent={<Error msg="No lobby found" size={100} color="#A4A2A2" style={{flex: 1}}/>}
                         renderItem={({item})=>{
                             let color = (item.code == currentLobby.code) ? currentLobby.color : "#F4F4F4";
+                            let disableColor = item.started ? {color: "#A4A2A2"} : null;
                             return (
-                                <TouchableOpacity onPress={() => onLobbyPress(item)} >
+                                <TouchableOpacity onPress={() => onLobbyPress(item)} disabled = {item.started}>
                                     <MyListCard style={[styles.itemStyle, {backgroundColor: color}]}>
                                         <View style={{flexDirection: "row", justifyContent: "space-between"}}>
-                                            <Text style={styles.txtStyle}>{item.name}</Text>
-                                            <Text style={styles.txtStyle}>{item.players.length}/{item.limit}</Text>
+                                            <Text style={[styles.txtStyle, disableColor]}>{item.name}</Text>
+                                            {item.started ? <Text style={[styles.txtStyle, {color: "#A4A2A2"}]}>Started</Text>: null}
+                                            <Text style={[styles.txtStyle, disableColor]}>{item.players.length}/{item.limit}</Text>
                                         </View>
                                     </MyListCard>
                                 </TouchableOpacity>

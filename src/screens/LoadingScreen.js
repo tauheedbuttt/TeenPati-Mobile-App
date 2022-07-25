@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useContext} from "react";
-import { View, StyleSheet,Text, ImageBackground, ActivityIndicator } from 'react-native';
+import { View, StyleSheet,Text, ImageBackground, ActivityIndicator, BackHandler } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -7,6 +7,7 @@ import { useFonts } from 'expo-font';
 
 import { Context } from "../context/AuthContext";
 import MyButton from "../components/Reusable/MyButton";
+import Error from "../components/Reusable/Error";
 
 const LoadingScreen = ({ navigation, navigation:{goBack, state:{params}} }) => {
     let [fontsLoaded] = useFonts({
@@ -20,6 +21,12 @@ const LoadingScreen = ({ navigation, navigation:{goBack, state:{params}} }) => {
         // Perform the action
         action();
     },[])
+    useEffect(() => {
+        BackHandler.addEventListener("hardwareBackPress", ()=>{ clearError();});
+        return () => {
+            BackHandler.removeEventListener("hardwareBackPress", ()=>{ clearError();});
+        };
+    }, []);
     return (
         <SafeAreaView style={styles.safeViewStyle}>
             <ImageBackground source={require("../../assets/images/bg.png")} style={styles.bgStyle}>
@@ -27,19 +34,19 @@ const LoadingScreen = ({ navigation, navigation:{goBack, state:{params}} }) => {
                     {/* Loading Icon */}
                     {
                         state.error!="" ? 
-                        <Ionicons name="warning-sharp" color="#DF0000" size={100}/> : 
-                        <ActivityIndicator size={100} color="#272727"/>
-                    }
-                    {/* Text */}
-                    <Text style={styles.txtStyle}>{state.error!="" ? state.error : msg}</Text>
-                    {/* Go Back Button */}
-                    {state.error ? 
-                        <MyButton 
-                            text="Go Back"
-                            btnStyle={styles.btnStyle}
-                            onPress={()=>{ clearError(); goBack();}}
-                        />
-                        : null
+                        <>
+                            <Error msg={state.error} size={100} color="#DF0000"/>  
+                            <MyButton 
+                                text="Go Back"
+                                btnStyle={styles.btnStyle}
+                                onPress={()=>{ clearError(); goBack();}}
+                            />
+                        </>
+                        :
+                        <>
+                            <ActivityIndicator size={100} color="#272727"/>
+                            <Text style={styles.txtStyle}>{state.error!="" ? state.error : msg}</Text>
+                        </>
                     }
                 </View>
             </ImageBackground>

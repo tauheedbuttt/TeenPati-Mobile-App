@@ -1,4 +1,5 @@
 import createDataContext from "./createDataContext";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import ngrok from "../api/ngrok";
 import { navigate } from "../navigationRef";
 
@@ -23,11 +24,15 @@ const authReducer = (state, action) =>{
 // actions
 // extracting functionality from reducer
 
+
 // add new lobby to db
 const addLobby = (dispatch) => async (lobby, username) => {
     try{
+        
         const response = await ngrok.post('/create', lobby);
+        
         dispatch({type: 'create', payload: response.data.token})
+        await AsyncStorage.setItem("token", response.data.token);
         
         // navigate to Game Screen
         navigate('Game', {
@@ -44,17 +49,17 @@ const addLobby = (dispatch) => async (lobby, username) => {
 };
 
 // join a lobby
-const joinLobby = (dispatch) => async (code, username, number) => {
+const joinLobby = (dispatch) => async (code, username, socketID) => {
     try{
-        const response = await ngrok.post('/join', {code, username, cards:[]});
+        const response = await ngrok.post('/join', {code, username, socketID});
         dispatch({type: 'join', payload: response.data.token});
+        await AsyncStorage.setItem("token", response.data.token);
     
         // navigate to Game Screen
         navigate('Game', {
             username: username, 
             against: "USER", 
             code: code,
-            number
             }
         );
     }
@@ -65,12 +70,14 @@ const joinLobby = (dispatch) => async (code, username, number) => {
 };
 
 // leave a lobby
-const leaveLobby = (dispatch) => async (number, token) => {
+const leaveLobby = (dispatch) => async () => {
     try{
+        const token = await AsyncStorage.getItem("token");
         const headers = {
             'Authorization': `Bearer ${token}`
         }
-        const response = await ngrok.post('/leave', {number}, {headers: headers});
+        const response = await ngrok.post('/leave', {}, {headers: headers});
+        await AsyncStorage.removeItem("token");
         dispatch({type: 'leave'})
     }
     catch(err){
@@ -79,12 +86,18 @@ const leaveLobby = (dispatch) => async (number, token) => {
     }
 };
 
-// delete a lobby
-const deleteLobby = (dispatch) => async (code, callback) => {
-    await ngrok.post('/remove', code);
-    dispatch({type: 'delete'})
-    if (callback != undefined){
-        callback();
+const updateSocketID = (dispatch) => async (token) =>{
+    if (!token){
+        return null;
+    }
+    try{
+        const socketID = await AsyncStorage.getItem("socketID");
+        const headers = {
+            'Authorization': `Bearer ${token}`
+        }
+        await ngrok.post('/update', {socketID}, {headers: headers});
+    }catch(err){
+        console.log(err.response.data.error);
     }
 };
 
@@ -102,6 +115,6 @@ const initialState = {
 // Exporting Context and Provider
 export const {Context, Provider} = createDataContext(
     authReducer, 
-    {addLobby, joinLobby, deleteLobby, clearError, leaveLobby}, 
+    {addLobby, joinLobby, clearError, leaveLobby, updateSocketID}, 
     initialState
 );

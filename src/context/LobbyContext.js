@@ -1,7 +1,6 @@
 import createDataContext from "./createDataContext";
 import ngrok from "../api/ngrok";
 
-
 // reducers
 // These will define te functionality we can do with data
 const lobbyReducer = (state, action) =>{
@@ -10,11 +9,12 @@ const lobbyReducer = (state, action) =>{
     switch (action.type){
         case 'get':
             return action.payload;
+        case 'add':
+            return [...state, action.payload]
         default:
             return state;
     }
 }
-
 const getLobbies = (dispatch) => async(callback) =>{
     try{
         let response;
@@ -31,6 +31,10 @@ const getLobbies = (dispatch) => async(callback) =>{
     }
 };
 
+const addLobby = (dispatch) => async(lobby) =>{
+    dispatch({type: 'add', payload: lobby});
+};
+
 // initial State
 const initialState = [];
 
@@ -38,6 +42,6 @@ const initialState = [];
 // Exporting Context and Provider
 export const {Context, Provider} = createDataContext(
     lobbyReducer, 
-    {getLobbies}, 
+    {getLobbies, addLobby}, 
     initialState
 );

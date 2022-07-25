@@ -1,11 +1,14 @@
-import React, {useState} from "react";
-import { View, StyleSheet,Text, ImageBackground, Image } from 'react-native';
+import React, {useEffect, useState} from "react";
+import { View, StyleSheet, ImageBackground, Image } from 'react-native';
 import Dialog, { DialogContent, DialogTitle } from 'react-native-popup-dialog';
 
 
 import MyButton from "../components/Reusable/MyButton";
 import MyCard from "../components/Reusable/MyCard";
 import Counter from "../components/Reusable/Counter";
+
+
+import useSocket from "../hooks/useSocket";
 import LobbyContext from "../context/LobbyContext";
 
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -13,6 +16,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 
 const HomeScreen = ({ navigation }) => {
+    useSocket();
 
     // Dialog Box Appearence
     const [selection, setSelection] = useState(false);

@@ -1,3 +1,6 @@
+import { EXPRESS_URL } from '@env';
+import io from 'socket.io-client';
+
 import React, {useState, useContext, useEffect} from "react";
 import {View, ImageBackground, StyleSheet, FlatList, Text, TouchableOpacity} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -9,7 +12,10 @@ import BackButton from "../components/Reusable/BackButton";
 import MyTextBox from "../components/Reusable/MyTextbox";
 import MyProfile from "../components/Reusable/MyProfile";
 import LobbyList from "../components/LobbyList";
+
 import useJoinLobby from "../hooks/useJoinLobby";
+import useSocket from '../hooks/useSocket';
+
 import {Context as LobbyContext} from "../context/LobbyContext";
 import {Context as AuthContext} from "../context/AuthContext";
 
@@ -18,24 +24,29 @@ const JoinLobbyScreen = ({ navigation: { goBack, navigate, addListener }} ) => {
     // username
     const username="created in join  screen"
     
-    const {state, joinLobby} = useContext(AuthContext);
+    const {joinLobby} = useContext(AuthContext);
 
     const [startDisabled, lobbyCode, server, selectLobby, inputLobbyCode] = useJoinLobby();
 
     // ----------------------- Input Functions ---------------------------
+    
 
     const startGame = async () => {
         const code = lobbyCode == "" ? server.code : lobbyCode;
+
         const username = await AsyncStorage.getItem("username");
         const defaultUsername = await AsyncStorage.getItem("defaultUsername");
+        const socketID = await AsyncStorage.getItem("socketID");
+        
         navigate('Loading', {
-                action: () => joinLobby(code, username=="" ? defaultUsername: username, server.players.length+1),
+                action: () => joinLobby(code, username=="" ? defaultUsername: username, socketID),
                 msg: "Joining Lobby"
             }
         );
         
     };
-    console.log(state);
+
+    
 
     return (
         <SafeAreaView style={styles.safeViewStyle}>

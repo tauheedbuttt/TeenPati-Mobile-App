@@ -13,7 +13,6 @@ import MyProfile from "../components/Reusable/MyProfile";
 import Counter from "../components/Reusable/Counter";
 import CheckBoxList from "../components/CheckBoxList";
 import useCreateLobby from "../hooks/useCreateLobby";
-import {Context as LobbyContext} from "../context/LobbyContext";
 import {Context as AuthContext} from "../context/AuthContext";
 
 
@@ -33,6 +32,8 @@ const CreateLobbyScreen = ({ navigation: { goBack, navigate }}) => {
     const [players, setPlayers] = useState(1);
     // unkown gameplay mode
     const [isUnkownMode, setisUnkownMode] = useState(false);
+    // public or private
+    const [isPublic, setIsPublic] = useState(false);
     // special moves that user can engage in
     const moves = [
         {key: "0", move: "Swap Cards"},
@@ -47,8 +48,9 @@ const CreateLobbyScreen = ({ navigation: { goBack, navigate }}) => {
     
     // On Create Game
     const onCreateGame = async () => {
-        let username = await AsyncStorage.getItem("username");;
-        let defaultUsername = await AsyncStorage.getItem("defaultUsername");
+        const username = await AsyncStorage.getItem("username");;
+        const defaultUsername = await AsyncStorage.getItem("defaultUsername");
+        const socketID = await AsyncStorage.getItem("socketID");
         var lobby = {
             code: generateCode(6),
             name: serverName,
@@ -56,7 +58,7 @@ const CreateLobbyScreen = ({ navigation: { goBack, navigate }}) => {
             unknownMode: isUnkownMode,
             deck:[],
             table:[],
-            players: [{number: 1, username, cards:[]}],
+            players: [{ host: true, username, socketID }],
             specialMoves
         };
         navigate('Loading', {
@@ -113,6 +115,7 @@ const CreateLobbyScreen = ({ navigation: { goBack, navigate }}) => {
                                         thumbColor={isUnkownMode ? 'white' : 'white'}
                                         onValueChange={() => {setisUnkownMode(!isUnkownMode);}}
                                         value={isUnkownMode}
+                                        shouldRasterizeIOS={true}
                                     />
                                 </View>
                             </View>

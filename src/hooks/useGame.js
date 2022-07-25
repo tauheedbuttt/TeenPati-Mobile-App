@@ -1,8 +1,7 @@
 import { useState, useContext } from "react";
 
 import {Context as AuthContext} from "../context/AuthContext";
-
-import useAuthentication from "./useAuthentication";
+import {Context as GameContext} from "../context/GameContext.js";
 
 
 import { NavigationActions, StackActions } from 'react-navigation';
@@ -11,19 +10,23 @@ const resetAction = StackActions.reset({
     actions: [NavigationActions.navigate({ routeName: 'Home' })],
 });
 
-export default (navigation, number, against) => {
-    const [leave] = useAuthentication();
+export default (navigation, against) => {
+    const {leaveLobby} = useContext(AuthContext);
+    const {resetGame} = useContext(GameContext);
+
     const multiplayerBack = () =>{
-        leave(number);
+        leaveLobby();
+        resetGame();
         navigation.dispatch(resetAction);
         // deleteLobby(code);
         return true;
     }
     const singleplayerBack = () =>{
+        resetGame();
         navigation.dispatch(resetAction);
         return true;
     }
-    const backButton = (against == "USER") ? ()=>multiplayerBack(number) : singleplayerBack;
+    const backButton = (against == "USER") ? multiplayerBack : singleplayerBack;
     
 
     return [backButton, multiplayerBack, singleplayerBack];

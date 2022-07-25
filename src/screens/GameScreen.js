@@ -1,5 +1,5 @@
-import React, {useEffect, useContext} from "react";
-import {View, Text, ImageBackground, StyleSheet, Dimensions, BackHandler} from 'react-native';
+import React, {useEffect, useRef, useContext} from "react";
+import {View, Text, ImageBackground, StyleSheet, AppState, BackHandler} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import MyCard from "../components/Reusable/MyCard";
@@ -13,18 +13,22 @@ import useGame from "../hooks/useGame";
 
 import {Context as LobbyContext} from "../context/LobbyContext";
 import {Context as AuthContext} from "../context/AuthContext";
+import {Context as GameContext} from "../context/GameContext";
 
 
 
 
 const GameScreen = ({ navigation, navigation:{goBack, state:{params}}} ) => {
-    const {username, against, limit, unkownMode, specialMoves, code, number} = params;
+    const {username, against, limit, unkownMode, specialMoves, code, players} = params;
+    const {state} = useContext(GameContext);
 
-    const [backButton] = useGame(navigation, number, against);
+    const [backButton] = useGame(navigation, against);
+
     useEffect(() => {
         BackHandler.addEventListener("hardwareBackPress", backButton);
         return () => {
             BackHandler.removeEventListener("hardwareBackPress", backButton);
+            backButton();
         };
     }, []);
 

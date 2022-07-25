@@ -6,6 +6,7 @@ import { createStackNavigator } from "react-navigation-stack";
 // Context
 import { Provider as LobbyProvider } from "./src/context/LobbyContext";
 import { Provider as AuthProvider } from "./src/context/AuthContext";
+import { Provider as GameProvider } from "./src/context/GameContext";
 
 // navigator refference
 import { setNavigator } from "./src/navigationRef";
@@ -43,10 +44,12 @@ const App = createAppContainer(navigator);
 
 export default () => {
   return (
-    <LobbyProvider>
-      <AuthProvider>
-        <App  ref = {(navigator) =>  {setNavigator(navigator)}}/>
-      </AuthProvider>
-    </LobbyProvider>
+    <GameProvider>
+      <LobbyProvider>
+        <AuthProvider>
+          <App  ref = {(navigator) =>  {setNavigator(navigator)}}/>
+        </AuthProvider>
+      </LobbyProvider>
+    </GameProvider>
   );
 }
