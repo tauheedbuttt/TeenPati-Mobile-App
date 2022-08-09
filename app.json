@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "TeenPati",
+    "name": "Teen Pati",
     "slug": "TeenPati",
     "version": "1.0.0",
     "orientation": "landscape",
@@ -18,13 +18,17 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.btcks.teenpati",
+      "buildNumber": "1.0.0"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "com.btcks.teenpati",
+      "versionCode": 1
     },
     "web": {
       "favicon": "./assets/favicon.png"

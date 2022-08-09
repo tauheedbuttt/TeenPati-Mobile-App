@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useContext} from "react";
-import {View, Text, ImageBackground, StyleSheet, AppState, BackHandler} from 'react-native';
+import {View, Text, ImageBackground, StyleSheet, Dimensions, BackHandler} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import MyCard from "../components/Reusable/MyCard";
@@ -15,20 +15,19 @@ import {Context as LobbyContext} from "../context/LobbyContext";
 import {Context as AuthContext} from "../context/AuthContext";
 import {Context as GameContext} from "../context/GameContext";
 
-
+const win = Dimensions.get('window');
 
 
 const GameScreen = ({ navigation, navigation:{goBack, state:{params}}} ) => {
-    const {username, against, limit, unkownMode, specialMoves, code, players} = params;
-    const {state} = useContext(GameContext);
+    const {against, code} = params;
 
-    const [backButton] = useGame(navigation, against);
+    const [players, allReady, backButton, leaveGame] = useGame(navigation, against);
 
     useEffect(() => {
         BackHandler.addEventListener("hardwareBackPress", backButton);
         return () => {
             BackHandler.removeEventListener("hardwareBackPress", backButton);
-            backButton();
+            // leaveGame();
         };
     }, []);
 
@@ -36,22 +35,20 @@ const GameScreen = ({ navigation, navigation:{goBack, state:{params}}} ) => {
         <SafeAreaView style={styles.safeViewStyle}>
             <ImageBackground source={require("../../assets/images/bg.png")} style={styles.bgStyle}>
                 <View style={styles.mainViewStyle}>
-                    <View style={{flexDirection: "row", alignItems: "center", justifyContent: "space-between"}}>
+                    <View style={{marginHorizontal: 10, flexDirection: "row", alignItems: 'center', justifyContent: 'space-between'}}>
                         {/* Back Button */}
-                        <View style={{alignSelf: "flex-start", marginLeft: 10}}>
+                        <View>
                             <BackButton onPress={backButton}/>
                         </View>
-                        <View style={{flex: 1}} >
+                        <View style={{flex: 1, alignItems: 'center', right: win.width/24}} >
                             {against == "USER" ? <Code code={code}/> : null}
                         </View>
                     </View>
                 </View>
                 <GameBoard 
-                    style = {styles.boardStyle}
-                    players = {limit}
-                    username = {username}
+                    players = {players}
+                    allReady = {allReady}
                 />
-
             </ImageBackground>
         </SafeAreaView>
     );
@@ -60,11 +57,6 @@ const GameScreen = ({ navigation, navigation:{goBack, state:{params}}} ) => {
 const styles = StyleSheet.create({
     // CONTAINER STYLES
     mainViewStyle: {
-    },
-    boardStyle:{
-        flex: 1,
-        margin: 10,
-        marginHorizontal: 20,
     },
     // Content Styles
     heading:{

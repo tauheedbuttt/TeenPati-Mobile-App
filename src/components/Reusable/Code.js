@@ -1,8 +1,9 @@
 import React, {useState} from "react";
-import {View, Text, StyleSheet, TouchableOpacity, ToastAndroid, Clipboard} from 'react-native';
-// import { useHistory } from "react-router-dom";
+import {View, Text, StyleSheet, TouchableOpacity, Clipboard} from 'react-native';
+import Toast from 'react-native-simple-toast';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
+// import { useHistory } from "react-router-dom";
 
 // FONTS
 import { useFonts } from 'expo-font';
@@ -21,14 +22,7 @@ const Code = ({code, style}) => {
             <TouchableOpacity
                 onPress = {()=>{
                     // show message that the code is copied
-                    ToastAndroid.showWithGravityAndOffset(
-                        "Code copied to clipboard",
-                        ToastAndroid.LONG,
-                        ToastAndroid.BOTTOM,
-                        25,
-                        50
-                    );                  
-                    // copy the code to clipboard
+                    Toast.showWithGravity('Code copied to clipboard.', Toast.SHORT, Toast.CENTER);
                     Clipboard.setString(code);
                 }}
             >
@@ -54,9 +48,7 @@ const Code = ({code, style}) => {
 const styles = StyleSheet.create({
     container:{
         flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "space-between",
-        paddingHorizontal: 200
+        justifyContent: "center",
     },
     codeStyle: {
         fontSize: 25,

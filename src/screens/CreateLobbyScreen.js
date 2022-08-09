@@ -29,7 +29,7 @@ const CreateLobbyScreen = ({ navigation: { goBack, navigate }}) => {
     });
     const username ="CreatedInCreateScreen";
     // Total PPLayers
-    const [players, setPlayers] = useState(1);
+    const [players, setPlayers] = useState(2);
     // unkown gameplay mode
     const [isUnkownMode, setisUnkownMode] = useState(false);
     // public or private
@@ -58,6 +58,7 @@ const CreateLobbyScreen = ({ navigation: { goBack, navigate }}) => {
             unknownMode: isUnkownMode,
             deck:[],
             table:[],
+            turn:true,
             players: [{ host: true, username, socketID }],
             specialMoves
         };
@@ -102,7 +103,7 @@ const CreateLobbyScreen = ({ navigation: { goBack, navigate }}) => {
                                     value = {players}
                                     func = {setPlayers}
                                     max = {4}
-                                    min = {1}
+                                    min = {2}
                                     style = {{flex:0.65}}
                                 />
                             </View>

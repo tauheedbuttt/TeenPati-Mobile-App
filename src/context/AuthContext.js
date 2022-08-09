@@ -6,10 +6,10 @@ import { navigate } from "../navigationRef";
 const authReducer = (state, action) =>{
     switch(action.type){
         case "create":
-            return {...state, token: action.payload};
+            return {...state, token: action.payload.token, id: action.payload.id};
         case "join":
             // reset error
-            return {error: "", token: action.payload};
+            return {error: "", token: action.payload.token, id: action.payload.id};
         case "error":
             return {...state, error: action.payload};
         case "clearError":
@@ -17,7 +17,7 @@ const authReducer = (state, action) =>{
         case "delete":
             return { token: null, error: ""};
         case "leave":
-            return { token: null, error: ""};
+            return { token: null, error: "", id: null};
     }
 };
 
@@ -31,7 +31,7 @@ const addLobby = (dispatch) => async (lobby, username) => {
         
         const response = await ngrok.post('/create', lobby);
         
-        dispatch({type: 'create', payload: response.data.token})
+        dispatch({type: 'create', payload: {token: response.data.token, id: response.data.id}})
         await AsyncStorage.setItem("token", response.data.token);
         
         // navigate to Game Screen
@@ -52,7 +52,7 @@ const addLobby = (dispatch) => async (lobby, username) => {
 const joinLobby = (dispatch) => async (code, username, socketID) => {
     try{
         const response = await ngrok.post('/join', {code, username, socketID});
-        dispatch({type: 'join', payload: response.data.token});
+        dispatch({type: 'join', payload: {token: response.data.token, id: response.data.id}});
         await AsyncStorage.setItem("token", response.data.token);
     
         // navigate to Game Screen
