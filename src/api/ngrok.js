@@ -1,7 +1,7 @@
 import axios from 'axios';
-import { EXPRESS_DEV_URL } from '@env'
 
-console.log(EXPRESS_DEV_URL);
+EXPRESS_URL = process.env.EXPRESS_URL;
+
 export default axios.create({
-    baseURL: EXPRESS_DEV_URL,
+    baseURL: EXPRESS_URL,
 });

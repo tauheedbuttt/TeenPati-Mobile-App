@@ -21,7 +21,7 @@ const win = Dimensions.get('window');
 const GameScreen = ({ navigation, navigation:{goBack, state:{params}}} ) => {
     const {against, code} = params;
 
-    const [players, allReady, backButton, leaveGame] = useGame(navigation, against);
+    const [backButton, leaveGame] = useGame(navigation, against);
 
     useEffect(() => {
         BackHandler.addEventListener("hardwareBackPress", backButton);
@@ -45,9 +45,7 @@ const GameScreen = ({ navigation, navigation:{goBack, state:{params}}} ) => {
                         </View>
                     </View>
                 </View>
-                <GameBoard 
-                    players = {players}
-                    allReady = {allReady}
+                <GameBoard
                 />
             </ImageBackground>
         </SafeAreaView>

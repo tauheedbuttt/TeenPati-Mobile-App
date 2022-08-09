@@ -12,11 +12,19 @@ import {Context as AuthContext} from "../context/AuthContext";
 
 const win = Dimensions.get('window');
 
-const GameBoard = ({players, allReady}) => {
-    const {state} = useContext(GameContext);
-    if(players.length==0) return null;
+const GameBoard = ({}) => {
+    const {state: {players}} = useContext(GameContext);
+    if(players == undefined) return null;
     const topPlayer = players.length <= 2 ? players[1] : players[2];
 
+    const allReady = () => {
+        var count = 0;
+        players.forEach(player => {
+            if (player.ready)
+                count++;
+        });
+        return players.length == count;
+    }
 
     return (
         <MyCard cardStyle={styles.boardStyle}>
@@ -50,7 +58,7 @@ const GameBoard = ({players, allReady}) => {
                 </View>
                 <View style={styles.extra}>
                     <View style={styles.table}>
-                        <CardStack side='table' ready = {allReady}/>
+                        <CardStack side='table' ready = {allReady()}/>
                     </View>
                     <View style={styles.show}>
                         <PlayButton
@@ -59,7 +67,7 @@ const GameBoard = ({players, allReady}) => {
                         />
                     </View>
                     <View style={styles.deck}>
-                        <CardStack side='deck' ready = {allReady}/>
+                        <CardStack side='deck' ready = {allReady()}/>
                     </View>
                 </View>
                 <View style={styles.bottomHand}>

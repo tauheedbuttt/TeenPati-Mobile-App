@@ -7,8 +7,8 @@ import {Context as GameContext} from "../context/GameContext";
 const win = Dimensions.get('window');
 
 const CardStack = ({side, ready}) => {
-    const {state} = useContext(GameContext);
-    const cards = side=='deck' ? state.deck : state.table;
+    const {state: {deck, table}} = useContext(GameContext);
+    const cards = side =='deck' ? deck : table;
     
     return (
         <View style = {styles.container}>

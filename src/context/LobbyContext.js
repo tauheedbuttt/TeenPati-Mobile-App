@@ -30,6 +30,9 @@ const getLobbies = (dispatch) => async(callback) =>{
         console.log(err.message);
     }
 };
+const setLobbies = (dispatch) => async(lobbies) =>{
+    dispatch({type: 'get', payload: lobbies});
+};
 
 const addLobby = (dispatch) => async(lobby) =>{
     dispatch({type: 'add', payload: lobby});
@@ -42,6 +45,6 @@ const initialState = [];
 // Exporting Context and Provider
 export const {Context, Provider} = createDataContext(
     lobbyReducer, 
-    {getLobbies, addLobby}, 
+    {getLobbies, addLobby, setLobbies}, 
     initialState
 );
