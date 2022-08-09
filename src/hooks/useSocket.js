@@ -1,4 +1,4 @@
-import { EXPRESS_URL } from '@env';
+import { EXPRESS_PROD_URL, EXPRESS_DEV_URL } from '@env'
 import io from 'socket.io-client';
 
 import { useState, useEffect, useContext, useCallback } from "react";
@@ -8,6 +8,7 @@ import {Context as LobbyContext} from "../context/LobbyContext";
 import {Context as AuthContext} from "../context/AuthContext";
 import {Context as GameContext} from "../context/GameContext.js";
 
+console.log(EXPRESS_DEV_URL);
 export default () => {
 
     const {getLobbies} = useContext(LobbyContext);
@@ -15,7 +16,7 @@ export default () => {
     const {updateGame, setGame} = useContext(GameContext);
 
     useEffect(()=>{
-        const socket = io(`${EXPRESS_URL}/socket`);
+        const socket = io(`${EXPRESS_DEV_URL}/socket`);
         
         socket.on("connect", async ()=>{
             await AsyncStorage.setItem("socketID", socket.id);
