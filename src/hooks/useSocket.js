@@ -1,4 +1,4 @@
-EXPRESS_URL = process.env.EXPRESS_URL;
+import env from '../config/env';
 import io from 'socket.io-client';
 
 import { useState, useEffect, useContext, useCallback } from "react";
@@ -15,7 +15,7 @@ export default () => {
     const {updateGame, setGame} = useContext(GameContext);
 
     useEffect(()=>{
-        const socket = io(`${EXPRESS_URL}/socket`);
+        const socket = io(`${env.URI}/socket`);
         
         socket.on("connect", async ()=>{
             await AsyncStorage.setItem("socketID", socket.id);

@@ -1,7 +1,11 @@
-import {NGROK_URL} from "@env";
+LOCAL_URL = process.env.LOCAL_URL;
+SERVER_URL = process.env.SERVER_URL;
 
 const devEnvironmentVariables = {
-    NGROK_URL,
+    URI: LOCAL_URL
+};
+const prodEnvironmentVariables = {
+    URI: SERVER_URL
 };
 
-export default devEnvironmentVariables;
+export default prodEnvironmentVariables;
