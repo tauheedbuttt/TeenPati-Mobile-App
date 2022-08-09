@@ -1,4 +1,4 @@
-import { EXPRESS_PROD_URL, EXPRESS_DEV_URL } from '@env'
+import { EXPRESS_DEV_URL } from '@env'
 import io from 'socket.io-client';
 
 import { useState, useEffect, useContext, useCallback } from "react";
